@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace TextUtils
 {
@@ -12,6 +14,15 @@ namespace TextUtils
             byte[] data = Convert.FromBase64String(input);
             return Encoding.UTF8.GetString(data);
         }
+        public static async Task DecodeBase64Binary(string input, string dest)
+        {
+            byte[] data = Convert.FromBase64String(input);
+            using (var _file = File.OpenWrite(dest))
+            {
+                await new MemoryStream(data).CopyToAsync(_file);
+            }
+        }
+
 
         public static string EncodeBase64(string text)
         {

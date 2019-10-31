@@ -26,12 +26,12 @@ namespace TextUtils
 
             -1: Quit
             1: Base64 Decode (UTF-8)
-            1: Base64 Decode (Binary)
-            2: Base64 Encode
-            3: HTML Decode
-            4: HTML Encode
-            5: Unique Difference In Lists
-            6: JSON Format
+            2: Base64 Decode (Binary)
+            3: Base64 Encode
+            4: HTML Decode
+            5: HTML Encode
+            6: Unique Difference In Lists
+            7: JSON Format
             ";
                     Console.WriteLine(menu);
                     Console.Write("Enter Action: ");
@@ -61,16 +61,22 @@ namespace TextUtils
         private static void InitFunctions()
         {
             _textFunctions.Add(1, () => Clipboard.SetText(TextUtilities.DecodeBase64(Clipboard.GetText())));
-            _textFunctions.Add(2, () =>
+            _textFunctions.Add(2, async () =>
+            {
+                Console.Write("Output file: ");
+                string _dest = Console.ReadLine();
+                await TextUtilities.DecodeBase64Binary(Clipboard.GetText(), _dest);
+            });
+            _textFunctions.Add(3, () =>
                 Clipboard.SetText(TextUtilities.EncodeBase64(Clipboard.GetText()))
             );
-            _textFunctions.Add(3, () =>
+            _textFunctions.Add(4, () =>
                 Clipboard.SetText(HttpUtility.HtmlDecode(Clipboard.GetText()))
             );
-            _textFunctions.Add(4, () =>
+            _textFunctions.Add(5, () =>
                 Clipboard.SetText(HtmlEncoder.Default.Encode(Clipboard.GetText()))
             );
-            _textFunctions.Add(5, () =>
+            _textFunctions.Add(6, () =>
             {
                 Console.Write("Confirm paste first set [ENTER]:");
                 Console.ReadLine();
@@ -80,7 +86,7 @@ namespace TextUtils
                 string _set2 = Clipboard.GetText();
                 Clipboard.SetText(TextUtilities.UniqueDiffLines(_set1, _set2));
             });
-            _textFunctions.Add(6, () =>
+            _textFunctions.Add(7, () =>
                 Clipboard.SetText(JsonConvert.SerializeObject(JsonConvert.DeserializeObject(Clipboard.GetText()), Formatting.Indented)));
 
         }
