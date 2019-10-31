@@ -6,6 +6,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="_ReSharper.Caches\**" />
+    <EmbeddedResource Remove="_ReSharper.Caches\**" />
+    <None Remove="_ReSharper.Caches\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="TextCopy" Version="1.7.1" />
   </ItemGroup>
 
