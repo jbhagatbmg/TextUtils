@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Text.Encodings.Web;
+using System.Text.Json.Serialization;
 using System.Web;
+using Newtonsoft.Json;
 using TextCopy;
 
 namespace TextUtils
@@ -23,10 +25,16 @@ namespace TextUtils
             3: HTML Decode
             4: HTML Encode
             5: Unique Difference In Lists
+            6: JSON Format
             ";
                     Console.WriteLine(menu);
                     Console.Write("Enter Action: ");
-                    func = int.Parse(Console.ReadLine());
+                    try
+                    {
+                        func = int.Parse(Console.ReadLine());
+                    }
+                    catch { continue; }
+
                     Console.Clear();
                     switch (func)
                     {
@@ -50,6 +58,9 @@ namespace TextUtils
                             Console.ReadLine();
                             string _set2 = Clipboard.GetText();
                             Clipboard.SetText(TextUtilities.UniqueDiffLines(_set1, _set2));
+                            break;
+                        case 6:
+                            Clipboard.SetText(JsonConvert.SerializeObject(JsonConvert.DeserializeObject(Clipboard.GetText()), Formatting.Indented));
                             break;
                     }
                 }
