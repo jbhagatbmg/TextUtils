@@ -30,8 +30,9 @@ namespace TextUtils
             3: Base64 Encode
             4: HTML Decode
             5: HTML Encode
-            6: Unique Difference In Lists
+            6: XOR Lists
             7: JSON Format
+            8: Reverse String
             ";
                     Console.WriteLine(menu);
                     Console.Write("Enter Action: ");
@@ -48,7 +49,7 @@ namespace TextUtils
                     }
                     else
                     {
-                        throw  new Exception("Invalid function");
+                        throw new Exception("Invalid function");
                     }
                 }
                 catch (Exception e)
@@ -84,11 +85,23 @@ namespace TextUtils
                 Console.Write("Confirm paste second set [ENTER]:");
                 Console.ReadLine();
                 string _set2 = Clipboard.GetText();
-                Clipboard.SetText(TextUtilities.UniqueDiffLines(_set1, _set2));
+                var _res = TextUtilities.UniqueDiffLines(_set1, _set2);
+                if (!string.IsNullOrWhiteSpace(_res))
+                {
+                    Clipboard.SetText(_res);
+                }
+                else
+                {
+                    Console.WriteLine("Empty output");
+                }
             });
             _textFunctions.Add(7, () =>
                 Clipboard.SetText(JsonConvert.SerializeObject(JsonConvert.DeserializeObject(Clipboard.GetText()), Formatting.Indented)));
+            _textFunctions.Add(8, () =>
+                          Clipboard.SetText(TextUtilities.ReverseString(Clipboard.GetText())));
 
         }
+
+
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -14,6 +15,16 @@ namespace TextUtils
             byte[] data = Convert.FromBase64String(input);
             return Encoding.UTF8.GetString(data);
         }
+        public static string ReverseString(string input)
+        {
+            StringBuilder _reversed = new StringBuilder();
+            for (var i = input.Length - 1; i >= 0; i--)
+            {
+                _reversed.Append(input[i]);
+            }
+            return _reversed.ToString();
+        }
+
         public static async Task DecodeBase64Binary(string input, string dest)
         {
             byte[] data = Convert.FromBase64String(input);
@@ -36,8 +47,24 @@ namespace TextUtils
             Console.WriteLine($"List 2 Length: {_list2.Count}");
             Console.WriteLine($"Diff Length: {Math.Abs(_list1.Count - _list2.Count)}");
 
-            return string.Join(Environment.NewLine, _list1.Except(_list2).Concat(_list1.Except(_list2)).Distinct());
+            return string.Join(Environment.NewLine, _list1.ExclusiveOr(_list2).ToList());
         }
-
+        public static IList<T> ExclusiveOr<T>([NotNull]this IList<T> @this, IList<T> a)
+        {
+            a = a ?? new T[] { };
+            ISet<T> set = new HashSet<T>(@this);
+            foreach (T current in a)
+            {
+                if (set.Contains(current))
+                {
+                    set.Remove(current);
+                }
+                else
+                {
+                    set.Add(current);
+                }
+            }
+            return set.ToList();
+        }
     }
 }
