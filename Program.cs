@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.Encodings.Web;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
@@ -30,9 +31,10 @@ namespace TextUtils
             3: Base64 Encode
             4: HTML Decode
             5: HTML Encode
-            6: XOR Lists
-            7: JSON Format
-            8: Reverse String
+            6: Distinct
+            7: XOR Lists
+            8: JSON Format
+            9: Reverse String
             ";
                     Console.WriteLine(menu);
                     Console.Write("Enter Action: ");
@@ -61,23 +63,48 @@ namespace TextUtils
 
         private static void InitFunctions()
         {
-            _textFunctions.Add(1, () => Clipboard.SetText(TextUtilities.DecodeBase64(Clipboard.GetText())));
-            _textFunctions.Add(2, async () =>
+            void DecodeBase64Text() => Clipboard.SetText(TextUtilities.DecodeBase64(Clipboard.GetText()));
+
+            _textFunctions.Add(1, DecodeBase64Text);
+
+            void DecodeBase64Binary()
             {
                 Console.Write("Output file: ");
                 string _dest = Console.ReadLine();
-                await TextUtilities.DecodeBase64Binary(Clipboard.GetText(), _dest);
-            });
-            _textFunctions.Add(3, () =>
-                Clipboard.SetText(TextUtilities.EncodeBase64(Clipboard.GetText()))
+                TextUtilities.DecodeBase64Binary(Clipboard.GetText(), _dest);
+            }
+
+            _textFunctions.Add(2, DecodeBase64Binary);
+
+            void EncodeBase64() => Clipboard.SetText(TextUtilities.EncodeBase64(Clipboard.GetText()));
+
+            _textFunctions.Add(3, EncodeBase64
             );
-            _textFunctions.Add(4, () =>
-                Clipboard.SetText(HttpUtility.HtmlDecode(Clipboard.GetText()))
+
+            void HTMLDecode() => Clipboard.SetText(HttpUtility.HtmlDecode(Clipboard.GetText()));
+
+            _textFunctions.Add(4, HTMLDecode
             );
-            _textFunctions.Add(5, () =>
-                Clipboard.SetText(HtmlEncoder.Default.Encode(Clipboard.GetText()))
+
+            void HTMLEncode() => Clipboard.SetText(HtmlEncoder.Default.Encode(Clipboard.GetText()));
+
+            _textFunctions.Add(5, HTMLEncode
             );
-            _textFunctions.Add(6, () =>
+
+            void Distinct()
+            {
+                string _clip = Clipboard.GetText();
+             
+                if (!string.IsNullOrWhiteSpace(_clip))
+                {
+                    Clipboard.SetText(string.Join(Environment.NewLine, _clip.Split(new char[]{'\n','\r'}, StringSplitOptions.RemoveEmptyEntries).GroupBy(a => a).Select(a => a.First())));
+                }
+                else
+                {
+                    Console.WriteLine("Empty clipboard");
+                }
+            }
+            void XORList()
             {
                 Console.Write("Confirm paste first set [ENTER]:");
                 Console.ReadLine();
@@ -94,10 +121,13 @@ namespace TextUtils
                 {
                     Console.WriteLine("Empty output");
                 }
-            });
-            _textFunctions.Add(7, () =>
-                Clipboard.SetText(JsonConvert.SerializeObject(JsonConvert.DeserializeObject(Clipboard.GetText()), Formatting.Indented)));
+            }
+
+            _textFunctions.Add(6, Distinct);
+            _textFunctions.Add(7, XORList);
             _textFunctions.Add(8, () =>
+                Clipboard.SetText(JsonConvert.SerializeObject(JsonConvert.DeserializeObject(Clipboard.GetText()), Formatting.Indented)));
+            _textFunctions.Add(9, () =>
                           Clipboard.SetText(TextUtilities.ReverseString(Clipboard.GetText())));
 
         }

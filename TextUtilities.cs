@@ -25,12 +25,12 @@ namespace TextUtils
             return _reversed.ToString();
         }
 
-        public static async Task DecodeBase64Binary(string input, string dest)
+        public static void DecodeBase64Binary(string input, string dest)
         {
             byte[] data = Convert.FromBase64String(input);
             using (var _file = File.OpenWrite(dest))
             {
-                await new MemoryStream(data).CopyToAsync(_file);
+                Task.Run(async () => { await new MemoryStream(data).CopyToAsync(_file); }).Wait();
             }
         }
 
