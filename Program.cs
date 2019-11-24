@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.Encodings.Web;
 using System.Text.Json.Serialization;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Web;
 using Newtonsoft.Json;
@@ -33,8 +34,9 @@ namespace TextUtils
             5: HTML Encode
             6: Distinct
             7: XOR Lists
-            8: JSON Format
-            9: Reverse String
+            8: Regex Unescape
+            9: JSON Format
+            10: Reverse String
             ";
                     Console.WriteLine(menu);
                     Console.Write("Enter Action: ");
@@ -94,10 +96,10 @@ namespace TextUtils
             void Distinct()
             {
                 string _clip = Clipboard.GetText();
-             
+
                 if (!string.IsNullOrWhiteSpace(_clip))
                 {
-                    Clipboard.SetText(string.Join(Environment.NewLine, _clip.Split(new char[]{'\n','\r'}, StringSplitOptions.RemoveEmptyEntries).GroupBy(a => a).Select(a => a.First())));
+                    Clipboard.SetText(string.Join(Environment.NewLine, _clip.Split(new char[] { '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries).GroupBy(a => a).Select(a => a.First())));
                 }
                 else
                 {
@@ -126,8 +128,11 @@ namespace TextUtils
             _textFunctions.Add(6, Distinct);
             _textFunctions.Add(7, XORList);
             _textFunctions.Add(8, () =>
-                Clipboard.SetText(JsonConvert.SerializeObject(JsonConvert.DeserializeObject(Clipboard.GetText()), Formatting.Indented)));
+                Clipboard.SetText(Regex.Unescape(Clipboard.GetText())));
             _textFunctions.Add(9, () =>
+                Clipboard.SetText(JsonConvert.SerializeObject(JsonConvert.DeserializeObject(Clipboard.GetText()), Formatting.Indented)));
+            
+            _textFunctions.Add(10, () =>
                           Clipboard.SetText(TextUtilities.ReverseString(Clipboard.GetText())));
 
         }
