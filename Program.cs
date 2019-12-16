@@ -37,6 +37,8 @@ namespace TextUtils
             8: Regex Unescape
             9: JSON Format
             10: Reverse String
+            11: URL Encode
+            12: URL Decode
             ";
                     Console.WriteLine(menu);
                     Console.Write("Enter Action: ");
@@ -46,6 +48,10 @@ namespace TextUtils
                     }
                     catch { continue; }
 
+                    if (func == -1)
+                    {
+                        break;
+                    }
                     Console.Clear();
                     if (_textFunctions.ContainsKey(func))
                     {
@@ -131,9 +137,15 @@ namespace TextUtils
                 Clipboard.SetText(Regex.Unescape(Clipboard.GetText())));
             _textFunctions.Add(9, () =>
                 Clipboard.SetText(JsonConvert.SerializeObject(JsonConvert.DeserializeObject(Clipboard.GetText()), Formatting.Indented)));
-            
+
             _textFunctions.Add(10, () =>
-                          Clipboard.SetText(TextUtilities.ReverseString(Clipboard.GetText())));
+                Clipboard.SetText(TextUtilities.ReverseString(Clipboard.GetText())));
+
+            _textFunctions.Add(11, () =>
+                Clipboard.SetText(HttpUtility.UrlEncode(Clipboard.GetText())));
+
+            _textFunctions.Add(12, () =>
+                Clipboard.SetText(HttpUtility.UrlDecode(Clipboard.GetText())));
 
         }
 
